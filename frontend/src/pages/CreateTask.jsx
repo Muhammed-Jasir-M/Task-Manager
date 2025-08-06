@@ -132,3 +132,74 @@ const CreateTask = () => {
               </label>
               <select
                 id="priority"
+                name="priority"
+                value={formData.priority}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Due Date */}
+          <div>
+            <label htmlFor="dueDate" className="block text-sm font-medium text-gray-700 mb-2">
+              <CalendarIcon className="w-4 h-4 inline mr-1" />
+              Due Date *
+            </label>
+            <input
+              type="date"
+              id="dueDate"
+              name="dueDate"
+              value={formData.dueDate}
+              onChange={handleInputChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              required
+            />
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-3 pt-6">
+            <button
+              type="submit"
+              disabled={loading}
+              className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? (
+                <div className="flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  Creating...
+                </div>
+              ) : (
+                'Create Task'
+              )}
+            </button>
+            <button
+              type="button"
+              onClick={handleCancel}
+              className="flex-1 bg-gray-200 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+
+      {/* Form Tips */}
+      <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <h3 className="text-sm font-medium text-blue-900 mb-2">Tips:</h3>
+        <ul className="text-sm text-blue-800 space-y-1">
+          <li>• Use descriptive titles to quickly identify tasks</li>
+          <li>• Set realistic due dates to manage your workload</li>
+          <li>• Use priority levels to focus on important tasks first</li>
+          <li>• Add detailed descriptions for complex tasks</li>
+        </ul>
+      </div>
+    </div>
+  );
+};
+
+export default CreateTask;
