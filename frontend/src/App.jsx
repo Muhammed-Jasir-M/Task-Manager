@@ -1,25 +1,27 @@
-import React, { useState } from 'react';
-import Board from './components/Board';
-import TaskForm from './components/TaskForm';
-import Filters from './components/Filters';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import Navbar from './components/Navbar';
+import Dashboard from './pages/Dashboard';
+import CreateTask from './pages/CreateTask';
+import TaskList from './pages/TaskList';
+import './App.css';
 
 function App() {
-  const [refresh, setRefresh] = useState(false);
-
-  const handleTaskCreated = () => {
-    setRefresh(!refresh);
-  };
-
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
-      <Toaster position="top-right" />
-      <h1 className="text-3xl font-bold text-center mb-6">TaskLite</h1>
-      <div className="max-w-6xl mx-auto">
-        <TaskForm onTaskCreated={handleTaskCreated} />
-        <Filters />
-        <Board refresh={refresh} />
-      </div>
+    <div className="App">
+      <Router>
+        <Navbar />
+        <main className="min-h-screen bg-gray-50 pt-16">
+          <Routes>
+            <Route path="/" element={<Navigate to="/dashboard" />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/create-task" element={<CreateTask />} />
+            <Route path="/tasks" element={<TaskList />} />
+          </Routes>
+        </main>
+        <Toaster position="top-right" />
+      </Router>
     </div>
   );
 }
