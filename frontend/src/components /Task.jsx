@@ -1,5 +1,5 @@
 import React from 'react';
-import { Draggable } from 'react-beautiful-dnd';
+import { Draggable } from '@hello-pangea/dnd';
 import { jsPDF } from 'jspdf';
 import { toast } from 'react-hot-toast';
 
