@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useTasks } from '../context/TaskContext';
 
 const Filters = () => {
     const [filters, setFilters] = useState({
