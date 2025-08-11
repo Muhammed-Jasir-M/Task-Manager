@@ -1,6 +1,6 @@
-const Task = require('../models/taskModel');
+import Task, { find, findByIdAndUpdate, findByIdAndDelete } from '../models/taskModel';
 
-exports.createTask = async (req, res) => {
+export async function createTask(req, res) {
     try {
         const { title, description, status, priority, dueDate } = req.body;
     
@@ -26,9 +26,9 @@ exports.createTask = async (req, res) => {
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
-};
+}
 
-exports.getAllTasks = async (req, res) => {
+export async function getAllTasks(req, res) {
     try {
         const { status, priority } = req.query;
         let filter = {};
@@ -36,29 +36,29 @@ exports.getAllTasks = async (req, res) => {
         if (status) filter.status = status;
         if (priority) filter.priority = priority;
     
-        const tasks = await Task.find(filter).sort({ createdAt: -1 });
+        const tasks = await find(filter).sort({ createdAt: -1 });
         res.json(tasks);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
-};
+}
 
-exports.updateTask = async (req, res) => {
+export async function updateTask(req, res) {
     try {
-        const task = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const task = await findByIdAndUpdate(req.params.id, req.body, { new: true });
 
         res.json(task);
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
-};
+}
 
 
-exports.deleteTask = async (req, res) => {
+export async function deleteTask(req, res) {
     try {
-        await Task.findByIdAndDelete(req.params.id);
+        await findByIdAndDelete(req.params.id);
         res.json({ message: 'Task deleted' });
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
-};
+}
