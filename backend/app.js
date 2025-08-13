@@ -2,10 +2,10 @@
 import express, { json } from 'express';
 import { connect } from 'mongoose';
 import cors from 'cors';
+import dotenv from 'dotenv';
+import taskRoutes from './routes/taskRoutes.js';
 
-require('dotenv').config();
-
-import taskRoutes from './routes/taskRoutes';
+dotenv.config();
 
 const app = express();
 

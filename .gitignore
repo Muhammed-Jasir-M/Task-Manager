@@ -3,5 +3,12 @@ backend/.env
 frontend/node_modules
 frontend/.env
 
+
 .vscode/*
 !.vscode/extensions.json
+
+*.log
+
+frontend/dist
+frontend/dist-ssr
+*.local

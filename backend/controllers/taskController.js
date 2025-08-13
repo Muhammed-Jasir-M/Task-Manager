@@ -1,4 +1,4 @@
-import Task, { find, findByIdAndUpdate, findByIdAndDelete } from '../models/taskModel';
+import Task from '../models/taskModel.js';
 
 export async function createTask(req, res) {
     try {

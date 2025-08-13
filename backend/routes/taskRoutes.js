@@ -1,7 +1,7 @@
 import { Router } from 'express';
 const router = Router();
 
-import { createTask, getAllTasks, updateTask, deleteTask } from '../controllers/taskController';
+import { createTask, getAllTasks, updateTask, deleteTask } from '../controllers/taskController.js';
 
 router.post('/', createTask);
 router.get('/', getAllTasks);
