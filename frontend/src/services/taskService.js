@@ -1,58 +1,87 @@
-import axios from 'axios';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+class TaskService {
+  async request(endpoint, options = {}) {
+    const url = `${API_BASE_URL}${endpoint}`;
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        ...options.headers,
+      },
+      ...options,
+    };
 
-const api = axios.create({
-  baseURL: API_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
-export const taskService = {
-  // Create a new task
-  createTask: async (taskData) => {
     try {
-      const response = await api.post('/tasks', taskData);
-      return response.data;
-    } catch (error) {
-      throw error.response?.data || error.message;
-    }
-  },
+      const response = await fetch(url, config);
+      const data = await response.json();
 
-  // Get all tasks with optional filters
-  getAllTasks: async (filters = {}) => {
-    try {
-      const queryParams = new URLSearchParams();
-      if (filters.status) queryParams.append('status', filters.status);
-      if (filters.priority) queryParams.append('priority', filters.priority);
-      
-      const response = await api.get(`/tasks?${queryParams.toString()}`);
-      return response.data;
-    } catch (error) {
-      throw error.response?.data || error.message;
-    }
-  },
+      if (!response.ok) {
+        throw new Error(data.error || `HTTP error! status: ${response.status}`);
+      }
 
-  // Update a task
-  updateTask: async (id, taskData) => {
-    try {
-      const response = await api.put(`/tasks/${id}`, taskData);
-      return response.data;
+      return data;
     } catch (error) {
-      throw error.response?.data || error.message;
+      console.error('API request failed:', error);
+      throw error;
     }
-  },
+  }
 
-  // Delete a task
-  deleteTask: async (id) => {
-    try {
-      const response = await api.delete(`/tasks/${id}`);
-      return response.data;
-    } catch (error) {
-      throw error.response?.data || error.message;
+  async getTasks(filters = {}) {
+    const queryParams = new URLSearchParams();
+    
+    if (filters.status) {
+      queryParams.append('status', filters.status);
     }
-  },
-};
+    if (filters.priority) {
+      queryParams.append('priority', filters.priority);
+    }
 
-export default taskService;
+    const queryString = queryParams.toString();
+    const endpoint = `/tasks${queryString ? `?${queryString}` : ''}`;
+
+    return this.request(endpoint);
+  }
+
+  async getTask(id) {
+    return this.request(`/tasks/${id}`);
+  }
+
+  async createTask(taskData) {
+    return this.request('/tasks', {
+      method: 'POST',
+      body: JSON.stringify(taskData),
+    });
+  }
+
+  async updateTask(id, updates) {
+    return this.request(`/tasks/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(updates),
+    });
+  }
+
+  async deleteTask(id) {
+    return this.request(`/tasks/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
+  // Utility methods for common operations
+  async markTaskComplete(id) {
+    return this.updateTask(id, { status: 'Done' });
+  }
+
+  async markTaskInProgress(id) {
+    return this.updateTask(id, { status: 'In Progress' });
+  }
+
+  async markTaskTodo(id) {
+    return this.updateTask(id, { status: 'To Do' });
+  }
+
+  async changePriority(id, priority) {
+    return this.updateTask(id, { priority });
+  }
+}
+
+export const taskService = new TaskService();

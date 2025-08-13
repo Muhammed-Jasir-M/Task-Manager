@@ -1,9 +1,9 @@
 // pages/CreateTask.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
-import { CalendarIcon, PencilIcon, TagIcon } from '@heroicons/react/24/outline';
+import { Plus, Calendar, AlertCircle, FileText } from 'lucide-react';
 import { taskService } from '../services/taskService';
+import toast from 'react-hot-toast';
 
 const CreateTask = () => {
   const navigate = useNavigate();
@@ -13,7 +13,7 @@ const CreateTask = () => {
     description: '',
     status: 'To Do',
     priority: 'Medium',
-    dueDate: '',
+    dueDate: new Date().toISOString().split('T')[0]
   });
 
   const handleInputChange = (e) => {
@@ -26,57 +26,51 @@ const CreateTask = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (!formData.title.trim()) {
-      toast.error('Title is required');
-      return;
-    }
-
-    if (!formData.dueDate) {
-      toast.error('Due date is required');
-      return;
-    }
+    setLoading(true);
 
     try {
-      setLoading(true);
       await taskService.createTask(formData);
       toast.success('Task created successfully!');
-      navigate('/dashboard');
+      navigate('/');
     } catch (error) {
-      toast.error(error.error || 'Failed to create task');
+      toast.error('Failed to create task');
+      console.error('Error creating task:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleCancel = () => {
-    navigate('/dashboard');
+  const getPriorityColor = (priority) => {
+    switch (priority) {
+      case 'High':
+        return 'border-red-300 bg-red-50';
+      case 'Medium':
+        return 'border-yellow-300 bg-yellow-50';
+      case 'Low':
+        return 'border-green-300 bg-green-50';
+      default:
+        return 'border-gray-300 bg-gray-50';
+    }
   };
 
-  // Set default due date to tomorrow
-  React.useEffect(() => {
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    setFormData(prev => ({
-      ...prev,
-      dueDate: tomorrow.toISOString().split('T')[0]
-    }));
-  }, []);
-
   return (
-    <div className="container mx-auto px-4 py-8 max-w-2xl">
+    <div className="max-w-2xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Create New Task</h1>
-        <p className="text-gray-600">Add a new task to your workflow</p>
+        <div className="flex items-center space-x-3 mb-6">
+          <Plus className="h-8 w-8 text-blue-600" />
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Create New Task</h1>
+            <p className="text-gray-600 mt-1">Add a new task to your workflow</p>
+          </div>
+        </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+        <div className="space-y-6">
           {/* Title */}
           <div>
             <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
-              <PencilIcon className="w-4 h-4 inline mr-1" />
-              Title *
+              Task Title *
             </label>
             <input
               type="text"
@@ -84,9 +78,9 @@ const CreateTask = () => {
               name="title"
               value={formData.title}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Enter task title"
               required
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              placeholder="Enter task title..."
             />
           </div>
 
@@ -101,13 +95,13 @@ const CreateTask = () => {
               value={formData.description}
               onChange={handleInputChange}
               rows={4}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Enter task description (optional)"
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              placeholder="Enter task description..."
             />
           </div>
 
-          {/* Status and Priority */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Status and Priority Row */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-2">
                 Status
@@ -117,7 +111,7 @@ const CreateTask = () => {
                 name="status"
                 value={formData.status}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
               >
                 <option value="To Do">To Do</option>
                 <option value="In Progress">In Progress</option>
@@ -127,7 +121,6 @@ const CreateTask = () => {
 
             <div>
               <label htmlFor="priority" className="block text-sm font-medium text-gray-700 mb-2">
-                <TagIcon className="w-4 h-4 inline mr-1" />
                 Priority
               </label>
               <select
@@ -135,11 +128,11 @@ const CreateTask = () => {
                 name="priority"
                 value={formData.priority}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className={`w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${getPriorityColor(formData.priority)}`}
               >
-                <option value="Low">Low</option>
-                <option value="Medium">Medium</option>
-                <option value="High">High</option>
+                <option value="High">High Priority</option>
+                <option value="Medium">Medium Priority</option>
+                <option value="Low">Low Priority</option>
               </select>
             </div>
           </div>
@@ -147,57 +140,85 @@ const CreateTask = () => {
           {/* Due Date */}
           <div>
             <label htmlFor="dueDate" className="block text-sm font-medium text-gray-700 mb-2">
-              <CalendarIcon className="w-4 h-4 inline mr-1" />
               Due Date *
             </label>
-            <input
-              type="date"
-              id="dueDate"
-              name="dueDate"
-              value={formData.dueDate}
-              onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              required
-            />
+            <div className="relative">
+              <input
+                type="date"
+                id="dueDate"
+                name="dueDate"
+                value={formData.dueDate}
+                onChange={handleInputChange}
+                required
+                className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              />
+              <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
+            </div>
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-3 pt-6">
-            <button
-              type="submit"
-              disabled={loading}
-              className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? (
-                <div className="flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  Creating...
+          {/* Preview Card */}
+          {formData.title && (
+            <div className="border-t border-gray-200 pt-6">
+              <h3 className="text-lg font-medium text-gray-900 mb-4">Preview</h3>
+              <div className="bg-gray-50 rounded-lg border border-gray-200 p-4">
+                <div className="flex justify-between items-start mb-3">
+                  <h4 className="font-semibold text-gray-900 text-sm leading-tight">
+                    {formData.title}
+                  </h4>
+                  <FileText className="h-4 w-4 text-gray-400" />
                 </div>
-              ) : (
-                'Create Task'
-              )}
-            </button>
+                
+                {formData.description && (
+                  <p className="text-gray-600 text-xs mb-3">
+                    {formData.description}
+                  </p>
+                )}
+                
+                <div className="flex items-center justify-between">
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium border ${
+                    formData.priority === 'High' ? 'bg-red-100 text-red-800 border-red-200' :
+                    formData.priority === 'Medium' ? 'bg-yellow-100 text-yellow-800 border-yellow-200' :
+                    'bg-green-100 text-green-800 border-green-200'
+                  }`}>
+                    {formData.priority}
+                  </span>
+                  
+                  <div className="flex items-center text-xs text-gray-500">
+                    <Calendar className="h-3 w-3 mr-1" />
+                    <span>{new Date(formData.dueDate).toLocaleDateString('en-US', {
+                      month: 'short',
+                      day: 'numeric',
+                      year: 'numeric'
+                    })}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Form Actions */}
+          <div className="flex justify-end space-x-4 border-t border-gray-200 pt-6">
             <button
               type="button"
-              onClick={handleCancel}
-              className="flex-1 bg-gray-200 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
+              onClick={() => navigate('/')}
+              className="px-6 py-2 text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
             >
               Cancel
             </button>
+            <button
+              type="submit"
+              disabled={loading || !formData.title.trim()}
+              className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center space-x-2"
+            >
+              {loading && (
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+              )}
+              <Plus className="h-4 w-4" />
+              <span>{loading ? 'Creating...' : 'Create Task'}</span>
+            </button>
           </div>
-        </form>
-      </div>
-
-      {/* Form Tips */}
-      <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <h3 className="text-sm font-medium text-blue-900 mb-2">Tips:</h3>
-        <ul className="text-sm text-blue-800 space-y-1">
-          <li>• Use descriptive titles to quickly identify tasks</li>
-          <li>• Set realistic due dates to manage your workload</li>
-          <li>• Use priority levels to focus on important tasks first</li>
-          <li>• Add detailed descriptions for complex tasks</li>
-        </ul>
-      </div>
+        </div>
+      </form>
     </div>
   );
 };

@@ -12,7 +12,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { taskService } from '../services/taskService';
 import Loading from '../components/Loading';
-import Filters from '../components/Filters';
+import Filters from '../components/Filter';
 import jsPDF from 'jspdf';
 
 const TaskList = () => {
