@@ -36,7 +36,7 @@ export async function getAllTasks(req, res) {
         if (status) filter.status = status;
         if (priority) filter.priority = priority;
     
-        const tasks = await find(filter).sort({ createdAt: -1 });
+        const tasks = await Task.find(filter).sort({ createdAt: -1 });
         res.json(tasks);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -45,7 +45,7 @@ export async function getAllTasks(req, res) {
 
 export async function updateTask(req, res) {
     try {
-        const task = await findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const task = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true });
 
         res.json(task);
     } catch (err) {
@@ -56,7 +56,7 @@ export async function updateTask(req, res) {
 
 export async function deleteTask(req, res) {
     try {
-        await findByIdAndDelete(req.params.id);
+        await Task.findByIdAndDelete(req.params.id);
         res.json({ message: 'Task deleted' });
     } catch (err) {
         res.status(400).json({ error: err.message });
