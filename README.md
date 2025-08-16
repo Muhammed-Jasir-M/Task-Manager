@@ -30,6 +30,7 @@ A simple and efficient Task Manager app built with the MERN stack (MongoDB, Expr
     ```bash
     cd backend
     npm install
+    cd ..
     ```
 
 3. **Install client dependencies**
