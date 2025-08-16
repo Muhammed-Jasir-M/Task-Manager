@@ -58,10 +58,12 @@ A simple and efficient Task Manager app built with the MERN stack (MongoDB, Expr
     ```bash
     cd backend
     npm start
+    cd ..
     ```
 2. **Start the frontend client**
     ```bash
     cd frontend
-    npm start
+    npm run dev
+    cd ..
     ```
 3. Open [http://localhost:3000](http://localhost:3000) in your browser to use the app.
