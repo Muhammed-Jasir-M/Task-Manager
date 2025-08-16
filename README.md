@@ -11,6 +11,12 @@ A simple and efficient Task Manager app built with the MERN stack (MongoDB, Expr
 - Search and filter tasks
 - Responsive and intuitive UI
 
+## Tech Stack
+
+- **Frontend:** React
+- **Backend:** Node.js, Express.js
+- **Database:** MongoDB (Mongoose)
+
 ## Getting Started
 
 ### Prerequisites
