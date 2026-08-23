@@ -8,9 +8,16 @@ const API_BASE_URL = getBaseUrl();
 class TaskService {
   async request(endpoint, options = {}) {
     const url = `${API_BASE_URL}${endpoint}`;
+    
+    let clerkUserId = null;
+    if (typeof window !== 'undefined' && window.Clerk && window.Clerk.user) {
+      clerkUserId = window.Clerk.user.id;
+    }
+
     const config = {
       headers: {
         'Content-Type': 'application/json',
+        ...(clerkUserId ? { 'x-user-id': clerkUserId } : {}),
         ...options.headers,
       },
       ...options,

@@ -1,10 +1,12 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Settings, CheckCircle2, Home, ArrowRight } from 'lucide-react';
+import { LayoutDashboard, Settings, CheckCircle2, Home, User } from 'lucide-react';
+import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/clerk-react';
 
 const Navbar = () => {
   const location = useLocation();
   const isActive = (path) => location.pathname === path;
+  const isClerkActive = Boolean(import.meta.env.VITE_CLERK_PUBLISHABLE_KEY);
 
   return (
     <header className="sticky top-0 z-40 bg-slate-900/80 backdrop-blur-xl border-b border-slate-800/80">
@@ -38,7 +40,7 @@ const Navbar = () => {
               }`}
             >
               <Home className="h-4 w-4" />
-              <span>Home</span>
+              <span className="hidden sm:inline">Home</span>
             </Link>
 
             <Link
@@ -62,18 +64,44 @@ const Navbar = () => {
               }`}
             >
               <Settings className="h-4 w-4" />
-              <span>Manage Tasks</span>
+              <span className="hidden sm:inline">Manage</span>
             </Link>
 
             <div className="h-5 w-px bg-slate-800 mx-1 hidden sm:block"></div>
 
-            <Link
-              to="/dashboard"
-              className="flex items-center space-x-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 text-white shadow-md shadow-indigo-500/25 transition-all duration-200"
-            >
-              <span>Launch App</span>
-              <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
+            {/* Clerk User Profile or Auth Action */}
+            {isClerkActive ? (
+              <>
+                <SignedOut>
+                  <SignInButton mode="modal">
+                    <button className="flex items-center space-x-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-700 transition-all duration-200">
+                      <User className="h-3.5 w-3.5 text-indigo-400" />
+                      <span>Sign In</span>
+                    </button>
+                  </SignInButton>
+                </SignedOut>
+
+                <SignedIn>
+                  <div className="flex items-center ml-1">
+                    <UserButton 
+                      appearance={{
+                        elements: {
+                          avatarBox: 'w-9 h-9 rounded-xl ring-2 ring-indigo-500/40'
+                        }
+                      }}
+                    />
+                  </div>
+                </SignedIn>
+              </>
+            ) : (
+              <Link
+                to="/dashboard"
+                className="flex items-center space-x-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 text-white shadow-md shadow-indigo-500/25 transition-all duration-200"
+              >
+                <span>Launch App</span>
+              </Link>
+            )}
+
           </div>
 
         </div>

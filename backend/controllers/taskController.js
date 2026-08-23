@@ -35,12 +35,7 @@ export async function getAllTasks(req, res) {
         const { status, priority } = req.query;
         const userId = req.userId || DEFAULT_DEMO_USER_ID;
 
-        let filter = {
-            $or: [
-                { userId: userId },
-                { userId: DEFAULT_DEMO_USER_ID }
-            ]
-        };
+        let filter = { userId };
     
         if (status) filter.status = status;
         if (priority) filter.priority = priority;
