@@ -15,9 +15,13 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-connect(process.env.MONGODB_URI)
-  .then(() => console.log('Connected to MongoDB'))
-  .catch(err => console.error('MongoDB connection error:', err));
+if (!process.env.MONGODB_URI) {
+  console.error('CRITICAL ERROR: MONGODB_URI environment variable is missing or undefined!');
+} else {
+  connect(process.env.MONGODB_URI)
+    .then(() => console.log('Connected to MongoDB'))
+    .catch(err => console.error('MongoDB connection error:', err));
+}
   
 app.use(cors());
 app.use(json());
