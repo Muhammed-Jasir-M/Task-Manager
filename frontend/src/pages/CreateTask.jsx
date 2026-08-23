@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Calendar, Sparkles, FileText, CheckCircle2, ArrowLeft, AlertCircle } from 'lucide-react';
+import { Plus, Calendar, Sparkles, ArrowLeft } from 'lucide-react';
 import { taskService } from '../services/taskService';
 import toast from 'react-hot-toast';
 
@@ -39,7 +39,7 @@ const CreateTask = () => {
     try {
       await taskService.createTask(formData);
       toast.success('Task created successfully!');
-      navigate('/');
+      navigate('/dashboard');
     } catch (error) {
       toast.error('Failed to create task');
       console.error('Error creating task:', error);
@@ -68,7 +68,7 @@ const CreateTask = () => {
       <div className="flex items-center justify-between pb-4 border-b border-slate-800">
         <div>
           <button 
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/dashboard')}
             className="flex items-center space-x-1.5 text-xs text-slate-400 hover:text-slate-200 mb-2 transition-colors"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
@@ -186,7 +186,7 @@ const CreateTask = () => {
             <div className="flex items-center justify-end space-x-3 pt-6 border-t border-slate-800">
               <button
                 type="button"
-                onClick={() => navigate('/')}
+                onClick={() => navigate('/dashboard')}
                 className="px-5 py-2.5 rounded-xl text-sm font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 transition-all"
               >
                 Cancel
