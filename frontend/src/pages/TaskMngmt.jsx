@@ -199,7 +199,7 @@ const TaskManagement = () => {
 
   if (loading && tasks.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[400px]">
+      <div className="flex flex-col items-center justify-center min-h-[60vh] w-full text-center">
         <div className="w-12 h-12 rounded-full border-2 border-indigo-500/20 border-t-indigo-500 animate-spin"></div>
         <p className="mt-4 text-sm text-slate-400 font-medium">Loading management directory...</p>
       </div>
