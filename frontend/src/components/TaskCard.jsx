@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, Download, AlertTriangle, FileText, CheckCircle } from 'lucide-react';
+import { Calendar, Download, AlertTriangle } from 'lucide-react';
 import { generateTaskPDF } from '../services/pdfService';
 
 const TaskCard = ({ task, isDragging = false }) => {
@@ -46,9 +46,9 @@ const TaskCard = ({ task, isDragging = false }) => {
 
   return (
     <div 
-      className={`group relative rounded-xl p-4 mb-3 transition-all duration-200 cursor-grab active:cursor-grabbing border ${
+      className={`group relative rounded-xl p-4 mb-3 transition-all duration-150 cursor-grab active:cursor-grabbing border ${
         isDragging 
-          ? 'bg-slate-800/90 border-indigo-500/50 shadow-2xl scale-[1.02] rotate-1 z-50' 
+          ? 'bg-slate-900 border-indigo-500 ring-2 ring-indigo-500/60 shadow-2xl shadow-indigo-950/90 max-w-[340px] w-full z-[9999] opacity-95 scale-[1.03]' 
           : overdue
             ? 'bg-slate-900/90 border-rose-500/30 hover:border-rose-500/50 shadow-lg shadow-rose-950/20'
             : 'bg-slate-900/70 hover:bg-slate-800/80 border-slate-800 hover:border-slate-700 shadow-md shadow-slate-950/40 hover:shadow-xl'

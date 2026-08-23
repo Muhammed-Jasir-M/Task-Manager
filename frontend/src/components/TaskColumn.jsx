@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { Droppable, Draggable } from '@hello-pangea/dnd';
 import TaskCard from './TaskCard';
 import { Clock, PlayCircle, CheckCircle2, Inbox } from 'lucide-react';
@@ -81,22 +82,29 @@ const TaskColumn = ({ status, tasks }) => {
                   draggableId={task._id} 
                   index={index}
                 >
-                  {(provided, snapshot) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                      style={{
-                        ...provided.draggableProps.style,
-                        touchAction: 'none'
-                      }}
-                    >
-                      <TaskCard 
-                        task={task} 
-                        isDragging={snapshot.isDragging}
-                      />
-                    </div>
-                  )}
+                  {(provided, snapshot) => {
+                    const child = (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        style={{
+                          ...provided.draggableProps.style,
+                        }}
+                      >
+                        <TaskCard 
+                          task={task} 
+                          isDragging={snapshot.isDragging}
+                        />
+                      </div>
+                    );
+
+                    // Render Portal to document.body when dragging to break out of transformed parent stacking contexts
+                    if (snapshot.isDragging) {
+                      return ReactDOM.createPortal(child, document.body);
+                    }
+                    return child;
+                  }}
                 </Draggable>
               ))
             )}
