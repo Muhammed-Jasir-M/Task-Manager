@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import api from '../services/api';
+import { taskService } from '../services/taskService';
 import { toast } from 'react-hot-toast';
 
 const TaskForm = ({ onTaskCreated }) => {
@@ -13,8 +13,8 @@ const TaskForm = ({ onTaskCreated }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await api.post('/', formData);
-            onTaskCreated();
+            await taskService.createTask(formData);
+            if (onTaskCreated) onTaskCreated();
             setFormData({
                 title: '',
                 description: '',
@@ -23,6 +23,7 @@ const TaskForm = ({ onTaskCreated }) => {
             });
             toast.success('Task created successfully');
         } catch (err) {
+            console.error(err);
             toast.error('Failed to create task');
         }
     };
@@ -60,7 +61,7 @@ const TaskForm = ({ onTaskCreated }) => {
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                     className="w-full p-2 border rounded"
-                    rows="3"
+                    rows={3}
                 />
             </div>
             <div className="mt-4">

@@ -2,8 +2,9 @@ import React from 'react';
 import { Draggable } from '@hello-pangea/dnd';
 import { jsPDF } from 'jspdf';
 import { toast } from 'react-hot-toast';
+import { taskService } from '../services/taskService';
 
-const Task = ({ task, index }) => {
+const Task = ({ task, index, onDelete }) => {
     const getPriorityColor = () => {
         switch (task.priority) {
             case 'High': return 'bg-red-100 text-red-800';
@@ -26,16 +27,18 @@ const Task = ({ task, index }) => {
             doc.save(`task-${task.title}.pdf`);
             toast.success('PDF downloaded');
         } catch (err) {
+            console.error(err);
             toast.error('Failed to generate PDF');
         }
     };
 
     const handleDelete = async () => {
         try {
-            await api.delete(`/tasks/${task._id}`);
+            await taskService.deleteTask(task._id);
             toast.success('Task deleted');
-            window.location.reload(); // Simple way to refresh
+            if (onDelete) onDelete(task._id);
         } catch (err) {
+            console.error(err);
             toast.error('Failed to delete task');
         }
     };

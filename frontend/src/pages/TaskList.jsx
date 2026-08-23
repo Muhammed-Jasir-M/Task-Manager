@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { 
@@ -23,22 +23,22 @@ const TaskList = () => {
   const [sortOrder, setSortOrder] = useState('desc');
   const [selectedTask, setSelectedTask] = useState(null);
 
-  useEffect(() => {
-    fetchTasks();
-  }, [filters]);
-
-  const fetchTasks = async () => {
+  const fetchTasks = useCallback(async () => {
     try {
       setLoading(true);
-      const data = await taskService.getAllTasks(filters);
-      setTasks(data);
+      const data = await taskService.getTasks(filters);
+      setTasks(data || []);
     } catch (error) {
       toast.error('Failed to fetch tasks');
       console.error('Error fetching tasks:', error);
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters]);
+
+  useEffect(() => {
+    fetchTasks();
+  }, [fetchTasks]);
 
   const handleTaskDelete = async (taskId) => {
     if (window.confirm('Are you sure you want to delete this task?')) {
@@ -47,6 +47,7 @@ const TaskList = () => {
         setTasks(prevTasks => prevTasks.filter(task => task._id !== taskId));
         toast.success('Task deleted successfully!');
       } catch (error) {
+        console.error(error);
         toast.error('Failed to delete task');
       }
     }
@@ -62,6 +63,7 @@ const TaskList = () => {
       );
       toast.success('Task status updated!');
     } catch (error) {
+      console.error(error);
       toast.error('Failed to update task');
     }
   };
@@ -90,6 +92,7 @@ const TaskList = () => {
       doc.save(`task-${task.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pdf`);
       toast.success('PDF downloaded successfully!');
     } catch (error) {
+      console.error(error);
       toast.error('Failed to generate PDF');
     }
   };
@@ -137,14 +140,6 @@ const TaskList = () => {
     setFilters({});
   };
 
-  const handleSort = (field) => {
-    if (sortBy === field) {
-      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortBy(field);
-      setSortOrder('asc');
-    }
-  };
 
   // Sort tasks
   const sortedTasks = [...tasks].sort((a, b) => {

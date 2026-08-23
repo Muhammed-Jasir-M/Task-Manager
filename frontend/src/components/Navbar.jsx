@@ -1,60 +1,72 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { CheckSquare, Plus, Settings } from 'lucide-react';
+import { LayoutDashboard, Plus, Settings, Sparkles, CheckCircle2 } from 'lucide-react';
 
 const Navbar = () => {
   const location = useLocation();
-
   const isActive = (path) => location.pathname === path;
 
   return (
-    <nav className="bg-white shadow-lg border-b">
-      <div className="container mx-auto px-4">
+    <header className="sticky top-0 z-40 bg-slate-900/80 backdrop-blur-xl border-b border-slate-800/80">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <Link to="/" className="flex items-center space-x-2">
-            <span className="text-xl font-bold text-gray-800">TaskLite</span>
-          </Link>
           
-          <div className="flex space-x-4">
+          {/* Logo & Branding */}
+          <Link to="/" className="flex items-center space-x-3 group">
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-violet-600 to-cyan-400 p-0.5 shadow-lg shadow-indigo-500/20 group-hover:scale-105 transition-transform duration-300">
+              <div className="h-full w-full bg-slate-950 rounded-[10px] flex items-center justify-center">
+                <CheckCircle2 className="h-5 w-5 text-indigo-400 group-hover:rotate-12 transition-transform duration-300" />
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <div className="flex items-center space-x-1.5">
+                <span className="text-xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-100 to-indigo-300 bg-clip-text text-transparent">
+                  TaskLite
+                </span>
+              </div>
+            </div>
+          </Link>
+
+          {/* Navigation Links */}
+          <div className="flex items-center space-x-1 sm:space-x-2">
             <Link
               to="/"
-              className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+              className={`flex items-center space-x-2 px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
                 isActive('/') 
-                  ? 'bg-blue-100 text-blue-700' 
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                  ? 'bg-indigo-600/20 text-indigo-300 border border-indigo-500/30 shadow-sm shadow-indigo-500/10' 
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
               }`}
             >
-              <CheckSquare className="h-4 w-4" />
+              <LayoutDashboard className="h-4 w-4" />
               <span>Dashboard</span>
             </Link>
             
             <Link
-              to="/create"
-              className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                isActive('/create') 
-                  ? 'bg-blue-100 text-blue-700' 
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-              }`}
-            >
-              <Plus className="h-4 w-4" />
-              <span>Create Task</span>
-            </Link>
-            
-            <Link
               to="/manage"
-              className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+              className={`flex items-center space-x-2 px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
                 isActive('/manage') 
-                  ? 'bg-blue-100 text-blue-700' 
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                  ? 'bg-indigo-600/20 text-indigo-300 border border-indigo-500/30 shadow-sm shadow-indigo-500/10' 
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
               }`}
             >
               <Settings className="h-4 w-4" />
               <span>Manage Tasks</span>
             </Link>
+
+            <div className="h-5 w-px bg-slate-800 mx-1 hidden sm:block"></div>
+
+            <Link
+              to="/create"
+              className="flex items-center space-x-2 px-4 py-2 rounded-xl text-sm font-semibold bg-gradient-to-r from-indigo-500 via-violet-600 to-indigo-600 text-white shadow-md shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
+            >
+              <Plus className="h-4 w-4 stroke-[2.5]" />
+              <span>New Task</span>
+            </Link>
           </div>
+
         </div>
       </div>
-    </nav>
+    </header>
   );
 };
 

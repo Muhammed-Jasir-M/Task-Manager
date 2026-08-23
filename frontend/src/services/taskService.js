@@ -1,4 +1,9 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const getBaseUrl = () => {
+  const envUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').trim().replace(/\/+$/, '');
+  return envUrl.endsWith('/api') ? envUrl : `${envUrl}/api`;
+};
+
+const API_BASE_URL = getBaseUrl();
 
 class TaskService {
   async request(endpoint, options = {}) {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { DragDropContext, Droppable } from '@hello-pangea/dnd';
 import Column from './Column';
-import api from '../services/api';
+import { taskService } from '../services/taskService';
 import { toast } from 'react-hot-toast';
 
 const Board = ({ refresh }) => {
@@ -11,9 +11,10 @@ const Board = ({ refresh }) => {
     useEffect(() => {
         const fetchTasks = async () => {
             try {
-                const response = await api.get('/tasks');
-                setTasks(response.data);
+                const response = await taskService.getTasks();
+                setTasks(response);
             } catch (err) {
+                console.error(err);
                 toast.error('Failed to load tasks');
             }
         };
@@ -27,15 +28,16 @@ const Board = ({ refresh }) => {
         if (destination.droppableId === source.droppableId) return;
 
         try {
-            const updatedTask = await api.put(`/tasks/${draggableId}`, {
+            const updatedTask = await taskService.updateTask(draggableId, {
                 status: destination.droppableId
             });
 
             setTasks(tasks.map(task =>
-                task._id === draggableId ? updatedTask.data : task
+                task._id === draggableId ? updatedTask : task
             ));
             toast.success('Task status updated');
         } catch (err) {
+            console.error(err);
             toast.error('Failed to update task');
         }
     };
@@ -60,4 +62,4 @@ const Board = ({ refresh }) => {
     );
 };
 
-export default Board; 
+export default Board;
