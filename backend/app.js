@@ -1,4 +1,3 @@
-
 import express, { json } from 'express';
 import { connect } from 'mongoose';
 import cors from 'cors';
@@ -9,11 +8,33 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173', 
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+const rawFrontendUrl = process.env.FRONTEND_URL || '';
+const cleanFrontendUrl = rawFrontendUrl.trim().replace(/\/+$/, '');
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+
+    const normalizedOrigin = origin.replace(/\/+$/, '');
+
+    if (
+      !cleanFrontendUrl || 
+      normalizedOrigin === cleanFrontendUrl ||
+      normalizedOrigin.includes('vercel.app') ||
+      normalizedOrigin.includes('localhost')
+    ) {
+      return callback(null, origin);
+    }
+
+    return callback(null, origin);
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+};
+
+app.use(cors(corsOptions));
+app.use(json());
 
 if (!process.env.MONGODB_URI) {
   console.error('CRITICAL ERROR: MONGODB_URI environment variable is missing or undefined!');
@@ -22,14 +43,8 @@ if (!process.env.MONGODB_URI) {
     .then(() => console.log('Connected to MongoDB'))
     .catch(err => console.error('MongoDB connection error:', err));
 }
-  
-app.use(cors());
-app.use(json());
 
 app.use('/api/tasks', taskRoutes);
 
 const PORT = process.env.PORT || 5000;
-
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-
