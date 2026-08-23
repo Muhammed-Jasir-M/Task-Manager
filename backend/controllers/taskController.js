@@ -15,9 +15,9 @@ export async function createTask(req, res) {
         const task = new Task({
             title,
             description: description || '',
-            status: status || 'todo',
-            priority: priority || 'medium',
-            dueDate: new Date(dueDate),
+            status: status || 'To Do',
+            priority: priority || 'Medium',
+            dueDate: new Date(dueDate).toISOString(),
         });
 
        
