@@ -1,8 +1,10 @@
 import Task from '../models/taskModel.js';
+import { DEFAULT_DEMO_USER_ID } from '../middleware/authMiddleware.js';
 
 export async function createTask(req, res) {
     try {
         const { title, description, status, priority, dueDate } = req.body;
+        const userId = req.userId || DEFAULT_DEMO_USER_ID;
     
         if (!title) {
             return res.status(400).json({ error: 'Title is required' });
@@ -13,6 +15,7 @@ export async function createTask(req, res) {
         }
 
         const task = new Task({
+            userId,
             title,
             description: description || '',
             status: status || 'To Do',
@@ -20,7 +23,6 @@ export async function createTask(req, res) {
             dueDate: new Date(dueDate).toISOString(),
         });
 
-       
         await task.save();
         res.status(201).json(task);
     } catch (err) {
@@ -31,7 +33,14 @@ export async function createTask(req, res) {
 export async function getAllTasks(req, res) {
     try {
         const { status, priority } = req.query;
-        let filter = {};
+        const userId = req.userId || DEFAULT_DEMO_USER_ID;
+
+        let filter = {
+            $or: [
+                { userId: userId },
+                { userId: DEFAULT_DEMO_USER_ID }
+            ]
+        };
     
         if (status) filter.status = status;
         if (priority) filter.priority = priority;
@@ -46,13 +55,11 @@ export async function getAllTasks(req, res) {
 export async function updateTask(req, res) {
     try {
         const task = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true });
-
         res.json(task);
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
 }
-
 
 export async function deleteTask(req, res) {
     try {

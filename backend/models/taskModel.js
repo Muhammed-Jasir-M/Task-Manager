@@ -1,6 +1,12 @@
 import { Schema, model } from 'mongoose';
 
 const TaskSchema = new Schema({
+  userId: {
+    type: String,
+    required: false,
+    default: '67c100000000000000000001',
+    index: true
+  },
   title: {
     type: String,
     required: true
@@ -21,7 +27,7 @@ const TaskSchema = new Schema({
   },
   dueDate: {
     type: String,
-    default: new Date().toISOString()
+    default: () => new Date().toISOString()
   }
 }, { timestamps: true });
 
