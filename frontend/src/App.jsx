@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import Navbar from './components/Navbar';
+import LandingPage from './pages/LandingPage';
 import Dashboard from './pages/Dashboard';
 import CreateTask from './pages/CreateTask';
 import TaskManagement from './pages/TaskMngmt';
@@ -18,7 +19,8 @@ function App() {
         
         <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1">
           <Routes>
-            <Route path="/" element={<Dashboard />} />
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/create" element={<CreateTask />} />
             <Route path="/manage" element={<TaskManagement />} />
           </Routes>
