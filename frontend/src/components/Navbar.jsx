@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Plus, Settings, Sparkles, CheckCircle2 } from 'lucide-react';
+import { LayoutDashboard, Settings, CheckCircle2 } from 'lucide-react';
 
 const Navbar = () => {
   const location = useLocation();
@@ -51,16 +51,6 @@ const Navbar = () => {
             >
               <Settings className="h-4 w-4" />
               <span>Manage Tasks</span>
-            </Link>
-
-            <div className="h-5 w-px bg-slate-800 mx-1 hidden sm:block"></div>
-
-            <Link
-              to="/create"
-              className="flex items-center space-x-2 px-4 py-2 rounded-xl text-sm font-semibold bg-gradient-to-r from-indigo-500 via-violet-600 to-indigo-600 text-white shadow-md shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
-            >
-              <Plus className="h-4 w-4 stroke-[2.5]" />
-              <span>New Task</span>
             </Link>
           </div>
 

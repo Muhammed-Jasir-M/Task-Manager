@@ -228,14 +228,14 @@ const TaskManagement = () => {
       </div>
 
       {/* Search Bar */}
-      <div className="relative">
+      <div className="max-w-xl mx-auto w-full relative">
         <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" />
         <input
           type="text"
           placeholder="Search by task title or description..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full pl-12 pr-4 py-3.5 bg-slate-900/80 border border-slate-800 rounded-2xl text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all shadow-inner"
+          className="w-full pl-12 pr-10 py-3.5 bg-slate-900/80 border border-slate-800 rounded-2xl text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all shadow-inner"
         />
         {searchTerm && (
           <button 

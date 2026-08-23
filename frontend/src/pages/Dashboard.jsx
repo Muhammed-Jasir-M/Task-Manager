@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { DragDropContext } from '@hello-pangea/dnd';
 import TaskColumn from '../components/TaskColumn';
-import Filter from '../components/Filter';
 import { taskService } from '../services/taskService';
 import toast from 'react-hot-toast';
 import { Clock, CheckCircle2, AlertTriangle, Layers, Plus, Sparkles, TrendingUp } from 'lucide-react';
@@ -10,14 +9,11 @@ import { Link } from 'react-router-dom';
 const Dashboard = () => {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState({});
-  const [dateFilter, setDateFilter] = useState('all');
-  const [sortBy, setSortBy] = useState('default');
 
   const fetchTasks = useCallback(async () => {
     try {
       setLoading(true);
-      const data = await taskService.getTasks(filters);
+      const data = await taskService.getTasks();
       setTasks(data || []);
     } catch (error) {
       toast.error('Failed to fetch tasks');
@@ -25,24 +21,11 @@ const Dashboard = () => {
     } finally {
       setLoading(false);
     }
-  }, [filters]);
+  }, []);
 
   useEffect(() => {
     fetchTasks();
   }, [fetchTasks]);
-
-  const handleFilterChange = (key, value) => {
-    setFilters(prev => ({
-      ...prev,
-      [key]: value || undefined
-    }));
-  };
-
-  const handleClearFilters = () => {
-    setFilters({});
-    setDateFilter('all');
-    setSortBy('default');
-  };
 
   const onDragEnd = async (result) => {
     const { destination, source, draggableId } = result;
@@ -56,68 +39,57 @@ const Dashboard = () => {
       return;
     }
 
-    const newStatus = destination.droppableId;
-    
     // Optimistic update
-    const previousTasks = [...tasks];
-    setTasks(prevTasks =>
-      prevTasks.map(task =>
-        task._id === draggableId ? { ...task, status: newStatus } : task
-      )
-    );
+    const sourceStatus = source.droppableId;
+    const destStatus = destination.droppableId;
 
-    try {
-      await taskService.updateTask(draggableId, { status: newStatus });
-      toast.success(`Task moved to ${newStatus}`);
-    } catch (error) {
-      setTasks(previousTasks);
-      toast.error('Failed to update task status');
-      console.error('Error updating task:', error);
+    const previousTasks = [...tasks];
+    const draggedTask = tasks.find(t => t._id === draggableId);
+    if (!draggedTask) return;
+
+    const updatedTask = { ...draggedTask, status: destStatus };
+
+    if (sourceStatus === destStatus) {
+      // Reordering within same column
+      const columnTasks = tasks.filter(t => t.status === sourceStatus);
+      const reorderedColumn = Array.from(columnTasks);
+      reorderedColumn.splice(source.index, 1);
+      reorderedColumn.splice(destination.index, 0, updatedTask);
+
+      let columnIndex = 0;
+      const newTasks = tasks.map(t => {
+        if (t.status === sourceStatus) {
+          const item = reorderedColumn[columnIndex];
+          columnIndex++;
+          return item;
+        }
+        return t;
+      });
+      setTasks(newTasks);
+    } else {
+      // Moving across different columns
+      const sourceColumnTasks = tasks.filter(t => t.status === sourceStatus);
+      const destColumnTasks = tasks.filter(t => t.status === destStatus);
+
+      sourceColumnTasks.splice(source.index, 1);
+      destColumnTasks.splice(destination.index, 0, updatedTask);
+
+      const otherTasks = tasks.filter(t => t.status !== sourceStatus && t.status !== destStatus);
+      setTasks([...otherTasks, ...sourceColumnTasks, ...destColumnTasks]);
+
+      try {
+        await taskService.updateTask(draggableId, { status: destStatus });
+        toast.success(`Task moved to ${destStatus}`);
+      } catch (error) {
+        setTasks(previousTasks);
+        toast.error('Failed to update task status');
+        console.error('Error updating task:', error);
+      }
     }
   };
 
-  // Filtered & Sorted Tasks for KanBan columns
-  const processedTasks = useMemo(() => {
-    let result = [...tasks];
-
-    // Date Filter
-    if (dateFilter !== 'all') {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-
-      result = result.filter(task => {
-        if (!task.dueDate) return false;
-        const taskDate = new Date(task.dueDate);
-        taskDate.setHours(0, 0, 0, 0);
-
-        if (dateFilter === 'today') {
-          return taskDate.getTime() === today.getTime();
-        } else if (dateFilter === 'overdue') {
-          return taskDate < today && task.status !== 'Done';
-        } else if (dateFilter === 'this_week') {
-          const nextWeek = new Date(today);
-          nextWeek.setDate(today.getDate() + 7);
-          return taskDate >= today && taskDate <= nextWeek;
-        }
-        return true;
-      });
-    }
-
-    // Sort By Due Date / Priority
-    if (sortBy === 'date_asc') {
-      result.sort((a, b) => new Date(a.dueDate || 0) - new Date(b.dueDate || 0));
-    } else if (sortBy === 'date_desc') {
-      result.sort((a, b) => new Date(b.dueDate || 0) - new Date(a.dueDate || 0));
-    } else if (sortBy === 'priority_desc') {
-      const priorityOrder = { High: 3, Medium: 2, Low: 1 };
-      result.sort((a, b) => (priorityOrder[b.priority] || 0) - (priorityOrder[a.priority] || 0));
-    }
-
-    return result;
-  }, [tasks, dateFilter, sortBy]);
-
   const getTasksByStatus = (status) => {
-    return processedTasks.filter(task => task.status === status);
+    return tasks.filter(task => task.status === status);
   };
 
   const getStats = () => {
@@ -264,18 +236,6 @@ const Dashboard = () => {
         </div>
 
       </div>
-
-      {/* Compact Inline Filter Bar */}
-      <Filter 
-        filters={filters} 
-        onFilterChange={handleFilterChange}
-        onClearFilters={handleClearFilters}
-        showStatus={false}
-        dateFilter={dateFilter}
-        onDateFilterChange={setDateFilter}
-        sortBy={sortBy}
-        onSortChange={setSortBy}
-      />
 
       {/* KanBan Board Columns */}
       <DragDropContext onDragEnd={onDragEnd}>
