@@ -4,7 +4,7 @@ import { Droppable, Draggable } from '@hello-pangea/dnd';
 import TaskCard from './TaskCard';
 import { Clock, PlayCircle, CheckCircle2, Inbox } from 'lucide-react';
 
-const TaskColumn = ({ status, tasks }) => {
+const TaskColumn = ({ status, tasks, onStatusChange }) => {
   const getColumnConfig = (status) => {
     switch (status) {
       case 'To Do':
@@ -87,7 +87,6 @@ const TaskColumn = ({ status, tasks }) => {
                       <div
                         ref={provided.innerRef}
                         {...provided.draggableProps}
-                        {...provided.dragHandleProps}
                         style={{
                           ...provided.draggableProps.style,
                         }}
@@ -95,6 +94,8 @@ const TaskColumn = ({ status, tasks }) => {
                         <TaskCard 
                           task={task} 
                           isDragging={snapshot.isDragging}
+                          dragHandleProps={provided.dragHandleProps}
+                          onStatusChange={onStatusChange}
                         />
                       </div>
                     );

@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 const Dashboard = () => {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [activeMobileTab, setActiveMobileTab] = useState('ALL'); // 'ALL' | 'To Do' | 'In Progress' | 'Done'
 
   const fetchTasks = useCallback(async () => {
     try {
@@ -26,6 +27,20 @@ const Dashboard = () => {
   useEffect(() => {
     fetchTasks();
   }, [fetchTasks]);
+
+  const handleQuickStatusChange = async (taskId, newStatus) => {
+    const previousTasks = [...tasks];
+    setTasks(tasks.map(t => t._id === taskId ? { ...t, status: newStatus } : t));
+
+    try {
+      await taskService.updateTask(taskId, { status: newStatus });
+      toast.success(`Task moved to ${newStatus}`);
+    } catch (error) {
+      setTasks(previousTasks);
+      toast.error('Failed to update task status');
+      console.error('Error updating task status:', error);
+    }
+  };
 
   const onDragEnd = async (result) => {
     const { destination, source, draggableId } = result;
@@ -130,14 +145,16 @@ const Dashboard = () => {
     );
   }
 
+  const columns = ['To Do', 'In Progress', 'Done'];
+
   return (
     <div className="space-y-6 animate-fadeIn">
       
       {/* Top Banner Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-2 border-b border-slate-800/80">
         <div>
-          <h1 className="text-3xl font-extrabold text-slate-100 tracking-tight">Dashboard Overview</h1>
-          <p className="text-slate-400 text-sm mt-1">Organize, drag, and track your daily tasks in real-time</p>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-100 tracking-tight">Dashboard Overview</h1>
+          <p className="text-slate-400 text-xs sm:text-sm mt-1">Organize, drag, and track your daily tasks in real-time</p>
         </div>
 
         <div className="flex items-center space-x-3">
@@ -237,21 +254,52 @@ const Dashboard = () => {
 
       </div>
 
+      {/* Mobile Column View Segmented Switcher */}
+      <div className="grid grid-cols-4 gap-1 p-1 bg-slate-900/80 border border-slate-800/80 rounded-2xl md:hidden text-center text-xs">
+        <button
+          onClick={() => setActiveMobileTab('ALL')}
+          className={`py-2 rounded-xl text-[11px] font-bold transition-all ${
+            activeMobileTab === 'ALL'
+              ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+              : 'text-slate-400 hover:text-slate-200'
+          }`}
+        >
+          All
+        </button>
+        {columns.map((colStatus) => {
+          const count = getTasksByStatus(colStatus).length;
+          const shortLabel = colStatus === 'In Progress' ? 'Progress' : colStatus;
+          return (
+            <button
+              key={colStatus}
+              onClick={() => setActiveMobileTab(colStatus)}
+              className={`py-2 rounded-xl text-[11px] font-bold transition-all truncate px-1 ${
+                activeMobileTab === colStatus
+                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              {shortLabel} ({count})
+            </button>
+          );
+        })}
+      </div>
+
       {/* KanBan Board Columns */}
       <DragDropContext onDragEnd={onDragEnd}>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <TaskColumn
-            status="To Do"
-            tasks={getTasksByStatus('To Do')}
-          />
-          <TaskColumn
-            status="In Progress"
-            tasks={getTasksByStatus('In Progress')}
-          />
-          <TaskColumn
-            status="Done"
-            tasks={getTasksByStatus('Done')}
-          />
+          {columns.map((status) => {
+            const isVisibleOnMobile = activeMobileTab === 'ALL' || activeMobileTab === status;
+            if (!isVisibleOnMobile) return null;
+            return (
+              <TaskColumn
+                key={status}
+                status={status}
+                tasks={getTasksByStatus(status)}
+                onStatusChange={handleQuickStatusChange}
+              />
+            );
+          })}
         </div>
       </DragDropContext>
     </div>
