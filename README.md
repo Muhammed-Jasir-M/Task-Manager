@@ -1,4 +1,4 @@
-# TaskLite ⚡ Next-Generation Task & Kanban Workspace
+# TaskLite ⚡ 
 
 **TaskLite** is a modern, full-stack MERN (MongoDB, Express.js, React, Node.js) task management workspace featuring interactive drag-and-drop Kanban boards, mobile-first responsive bottom navigation, instant status selectors, Clerk authentication integration, PDF task exports, real-time analytics, and advanced filtering.
 
