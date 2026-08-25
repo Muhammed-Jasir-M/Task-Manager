@@ -269,18 +269,26 @@ const LandingPage = () => {
       </section>
 
       {/* 5. FOOTER */}
-      <footer className="pt-8 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-        <div className="flex items-center space-x-2">
-          <CheckCircle2 className="h-4 w-4 text-indigo-400" />
-          <span className="font-bold text-slate-300">TaskLite</span>
+      <footer className="pt-8 pb-6 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 text-center sm:text-left">
+        <div className="flex flex-col sm:flex-row items-center space-y-1 sm:space-y-0 sm:space-x-3">
+          <div className="flex items-center space-x-2">
+            <CheckCircle2 className="h-4 w-4 text-indigo-400" />
+            <span className="font-bold text-slate-200">TaskLite</span>
+          </div>
+          <span className="hidden sm:inline text-slate-700">•</span>
           <span>© {new Date().getFullYear()} TaskLite Workspace. All rights reserved.</span>
         </div>
 
-        <div className="flex items-center space-x-4">
-          <Link to="/" className="hover:text-slate-300 transition-colors">Home</Link>
-          <Link to="/dashboard" className="hover:text-slate-300 transition-colors">Dashboard</Link>
-          <Link to="/manage" className="hover:text-slate-300 transition-colors">Task Management</Link>
-          <Link to="/create" className="hover:text-slate-300 transition-colors">Create Task</Link>
+        <div className="flex items-center space-x-1.5 text-slate-400 justify-center">
+          <span>Made by</span>
+          <a
+            href="https://github.com/Muhammed-Jasir-M"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold text-indigo-400 hover:text-indigo-300 underline underline-offset-4 transition-colors"
+          >
+            Muhammed Jasir M
+          </a>
         </div>
       </footer>
 

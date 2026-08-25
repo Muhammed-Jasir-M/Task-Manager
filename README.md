@@ -133,3 +133,9 @@ Task-Manager/
 │   └── package.json
 └── README.md
 ```
+
+---
+
+## 👤 Author
+
+- **Muhammed Jasir M** - [GitHub Profile](https://github.com/Muhammed-Jasir-M)
