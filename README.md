@@ -1,69 +1,135 @@
+# TaskLite ⚡ Next-Generation Task & Kanban Workspace
 
-# Task Manager
+**TaskLite** is a modern, full-stack MERN (MongoDB, Express.js, React, Node.js) task management workspace featuring interactive drag-and-drop Kanban boards, mobile-first responsive bottom navigation, instant status selectors, Clerk authentication integration, PDF task exports, real-time analytics, and advanced filtering.
 
-A simple and efficient Task Manager app built with the MERN stack (MongoDB, Express.js, React, Node.js). Organize your daily workflow, keep track of tasks, and boost your productivity—all in one place.
+---
 
-## Features
+## ✨ Features
 
-- Add, edit, and delete tasks
-- Mark tasks as completed or pending
-- Set due dates and priorities
-- Search and filter tasks
-- Responsive and intuitive UI
+- **Task Management**: Create, edit, delete, and organize daily tasks seamlessly.
+- **Interactive Kanban Board**: Drag and drop tasks between `To Do`, `In Progress`, and `Done` columns with touch-friendly drag handles.
+- **Status & Priority Tracking**: Assign priorities (`High`, `Medium`, `Low`) and due dates with overdue tracking.
+- **Search & Filtering**: Quick search by title or description, and filter by status or priority.
+- **Mobile-First Responsive UI**: Fixed mobile bottom navigation bar and mobile column view switcher.
+- **PDF Export**: Export individual task details as formatted PDF documents.
+- **User Authentication**: Integrated user sign-in and profile management.
+- **Analytics Dashboard**: Real-time stats showing completion rates, total tasks, and overdue items.
 
-## Tech Stack
+---
 
-- **Frontend:** React
-- **Backend:** Node.js, Express.js
-- **Database:** MongoDB (Mongoose)
+## 🛠️ Tech Stack
 
-## Getting Started
+### Frontend
+- **Framework**: React 19 + Vite
+- **Styling**: Tailwind CSS v4 + Lucide React Icons
+- **Drag and Drop**: `@hello-pangea/dnd`
+- **Routing & Notifications**: `react-router-dom` v7 + `react-hot-toast`
+- **PDF Generation**: `jspdf` + `html2canvas`
+- **Authentication**: `@clerk/clerk-react`
+
+### Backend
+- **Runtime**: Node.js (ES Modules)
+- **Framework**: Express.js 5
+- **Database**: MongoDB (Mongoose ODM)
+- **Utilities**: `dotenv`, `cors`, `nodemon`
+
+---
+
+## 🚀 Getting Started
 
 ### Prerequisites
-
-- [Node.js](https://nodejs.org/)
+- [Node.js](https://nodejs.org/) (v18 or higher)
 - [npm](https://www.npmjs.com/)
+- [MongoDB Database URI](https://www.mongodb.com/) (Local or MongoDB Atlas)
 
-### Installation
+---
 
-1. **Clone the repository**
-    ```bash
-    git clone https://github.com/Muhammed-Jasir-M/Task-Manager.git
-    cd Task-Manager
-    ```
+### Installation & Setup
 
-2. **Install server dependencies**
-    ```bash
-    cd backend
-    npm install
-    cd ..
-    ```
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/Muhammed-Jasir-M/Task-Manager.git
+   cd Task-Manager
+   ```
 
-3. **Install client dependencies**
-    ```bash
-    cd frontend
-    npm install
-    cd ..
-    ```
+2. **Configure Environment Variables**
 
-4. **Set up environment variables**  
-   Create a `.env` file in the root directory and add your MongoDB connection string:
-    ```
-    MONGODB_URI=your_mongodb_connection_string
-    ```
+   - **Backend Environment**: Create a `.env` file in the `backend/` directory:
+     ```env
+     PORT=
+     MONGODB_URI=
+     FRONTEND_URL=
+     ```
 
-### Running the App
+   - **Frontend Environment**: Create a `.env.local` file in the `frontend/` directory:
+     ```env
+     VITE_API_URL=http://localhost:5000/api
+     VITE_CLERK_PUBLISHABLE_KEY=
+     ```
 
-1. **Start the backend server**
-    ```bash
-    cd backend
-    npm start
-    cd ..
-    ```
-2. **Start the frontend client**
-    ```bash
-    cd frontend
-    npm run dev
-    cd ..
-    ```
-3. Open [http://localhost:3000](http://localhost:3000) in your browser to use the app.
+3. **Install Dependencies**
+
+   ```bash
+   # Install backend dependencies
+   cd backend
+   npm install
+
+   # Install frontend dependencies
+   cd ../frontend
+   npm install
+   ```
+
+---
+
+### Running the Application
+
+1. **Start Backend Server**
+   ```bash
+   cd backend
+   npm run dev
+   ```
+   The backend server will start on `http://localhost:5000`.
+
+2. **Start Frontend Client**
+   ```bash
+   cd frontend
+   npm run dev
+   ```
+   Open `http://localhost:5173` in your browser.
+
+---
+
+## 🔌 API Endpoints
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/api/tasks` | Fetch all tasks |
+| `GET` | `/api/tasks/:id` | Get a specific task by ID |
+| `POST` | `/api/tasks` | Create a new task |
+| `PUT` | `/api/tasks/:id` | Update an existing task |
+| `DELETE` | `/api/tasks/:id` | Delete a task |
+
+---
+
+## 💻 Project Structure
+
+```
+Task-Manager/
+├── backend/
+│   ├── controllers/    
+│   ├── models/         
+│   ├── routes/         
+│   ├── config/         
+│   ├── app.js          
+│   └── package.json
+│
+├── frontend/
+│   ├── src/
+│   │   ├── components/ 
+│   │   ├── pages/      
+│   │   ├── services/   
+│   │   ├── App.jsx     
+│   │   └── main.jsx
+│   └── package.json
+└── README.md
+```
