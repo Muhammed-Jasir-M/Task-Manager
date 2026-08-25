@@ -54,16 +54,16 @@
 
 2. **Configure Environment Variables**
 
-   - **Backend Environment**: Create a `.env` file in the `backend/` directory:
+   - **Backend Environment**: Copy `backend/.env.example` to `backend/.env`:
      ```env
      PORT=
      MONGODB_URI=
      FRONTEND_URL=
      ```
 
-   - **Frontend Environment**: Create a `.env.local` file in the `frontend/` directory:
+   - **Frontend Environment**: Copy `frontend/.env.example` to `frontend/.env`:
      ```env
-     VITE_API_URL=http://localhost:5000/api
+     VITE_API_URL=
      VITE_CLERK_PUBLISHABLE_KEY=
      ```
 
