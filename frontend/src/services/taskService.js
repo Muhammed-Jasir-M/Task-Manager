@@ -1,6 +1,6 @@
 const getBaseUrl = () => {
-  const envUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').trim().replace(/\/+$/, '');
-  return envUrl.endsWith('/api') ? envUrl : `${envUrl}/api`;
+  const envUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1').trim().replace(/\/+$/, '');
+  return envUrl.endsWith('/api/v1') ? envUrl : (envUrl.endsWith('/api') ? `${envUrl}/v1` : `${envUrl}/api/v1`);
 };
 
 const API_BASE_URL = getBaseUrl();

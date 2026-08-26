@@ -28,10 +28,11 @@
 - **Authentication**: `@clerk/clerk-react`
 
 ### Backend
+- **Architecture**: Controller - Service - DAO Pattern
 - **Runtime**: Node.js (ES Modules)
 - **Framework**: Express.js 5
 - **Database**: MongoDB (Mongoose ODM)
-- **Utilities**: `dotenv`, `cors`, `nodemon`
+- **Utilities**: Custom Logger, `dotenv`, `cors`, `nodemon`
 
 ---
 
@@ -103,11 +104,10 @@
 
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
-| `GET` | `/api/tasks` | Fetch all tasks |
-| `GET` | `/api/tasks/:id` | Get a specific task by ID |
-| `POST` | `/api/tasks` | Create a new task |
-| `PUT` | `/api/tasks/:id` | Update an existing task |
-| `DELETE` | `/api/tasks/:id` | Delete a task |
+| `GET` | `/api/v1/tasks` | Fetch all tasks |
+| `POST` | `/api/v1/tasks` | Create a new task |
+| `PUT` | `/api/v1/tasks/:id` | Update an existing task |
+| `DELETE` | `/api/v1/tasks/:id` | Delete a task |
 
 ---
 
@@ -117,9 +117,12 @@
 Task-Manager/
 ├── backend/
 │   ├── controllers/    
+│   ├── services/       
+│   ├── dao/            
 │   ├── models/         
 │   ├── routes/         
-│   ├── config/         
+│   ├── middleware/     
+│   ├── utils/          
 │   ├── app.js          
 │   └── package.json
 │
